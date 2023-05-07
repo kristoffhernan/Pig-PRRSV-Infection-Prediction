@@ -27,22 +27,10 @@ def na_split(gene, gd_df):
 # includes two different imputing methods to estimate the dpi or gene expression one of the two
 def impute_methods(w_na, wo_na):
 
+       
     x = np.array(wo_na['day'])
     y = np.array(wo_na['ge'])
     x_test = np.array(w_na['day'])
-
-    # Linear interpolation regression
-    interp_func = interp1d(x, y, kind='linear', bounds_error=False, assume_sorted=False)
-
-    # evaluate the interpolation function at new x-values
-    interp_y = interp_func(x_test)
-    
-    # impute values to df
-    interp_vals = {'day': x_test, 'ge':interp_y}
-    
-    # combine imputed df with df wo na's
-    interp_df = pd.concat([pd.DataFrame(interp_vals), wo_na], axis=0).sort_values('day')
-    
     
     
     # polynomial regression
@@ -59,6 +47,21 @@ def impute_methods(w_na, wo_na):
     
     # combine imputed df with df wo na's
     poly_df = pd.concat([pd.DataFrame(poly_vals), wo_na], axis=0).sort_values('day')
+      
+    
+
+    # Linear interpolation regression
+    interp_func = interp1d(x, y, kind='linear', bounds_error=False, assume_sorted=False)
+
+    # evaluate the interpolation function at new x-values
+    interp_y = interp_func(x_test)
+    
+    # impute values to df
+    interp_vals = {'day': x_test, 'ge':interp_y}
+    
+    # combine imputed df with df wo na's
+    interp_df = pd.concat([pd.DataFrame(interp_vals), wo_na], axis=0).sort_values('day')
+    
     
     
     # KNN regression
