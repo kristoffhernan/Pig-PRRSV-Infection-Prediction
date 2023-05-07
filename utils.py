@@ -111,3 +111,25 @@ def impute_methods(w_na, wo_na):
     
     
     return(poly_df, poly_func, interp_df, interp_func, knn_df, knn_func, knn_mse)
+
+
+
+
+
+def regress_lm(df, gene, n):
+    # individual models
+    lm = LinearRegression()
+
+    x = df['day'].values.reshape(-1,1)
+    y = df[gene].values.reshape(-1,1).ravel()
+    lm.fit(x,y)
+    
+    ln_mods.append(lm)
+    
+    lin = np.arange(0,29).reshape(-1, 1) 
+    preds = lm.predict(lin)
+    
+    ax = plt.subplot(5, 6, n + 1)
+    plt.scatter(df['day'], df[gene])
+    plt.plot(lin, preds, color='red')
+    plt.title(gene)
